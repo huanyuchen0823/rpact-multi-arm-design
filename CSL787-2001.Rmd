@@ -12,7 +12,7 @@ library(rpact)
 
 # Assumptions
 
-In this clinical trial design, we assume an 80% power ($\beta$) and a one-sided significance level ($\alpha$) of 0.1. Subjects will be followed for a maximum of 1 year, with the last subject being followed for 0.5 years. The accrual time is 1.83 years, and the study duration is 2.33 years. The hazard rate ($\lambda$) for the placebo group is assumed to be 1.2 per year. The hazard ratios are set at 0.6, 0.7, 0.8, and 0.9, assuming an exponential distribution of events. The trial uses a 2:1 allocation ratio, meaning two subjects in the treatment group for every one subject in the placebo group. This trial does not allow for early stopping due to efficacy, ensuring that the study reaches its planned conclusion unless futility is determined.
+In this clinical trial design, we assume an 80% power ($\beta = 0.2$) and a one-sided significance level ($\alpha$) of 0.1. Subjects will be followed for a maximum of 1 year, with the last subject being followed for 0.5 years. The accrual time is 1.83 years, and the study duration is 2.33 years. The hazard rate ($\lambda$) for the placebo group is assumed to be 1.2 per year. The hazard ratios are set at 0.6, 0.7, 0.8, and 0.9, assuming an exponential distribution of events. The trial uses a 2:1 allocation ratio, meaning two subjects in the treatment group for every one subject in the placebo group. This trial does not allow for early stopping due to efficacy, ensuring that the study reaches its planned conclusion unless futility is determined.
 
 
 
