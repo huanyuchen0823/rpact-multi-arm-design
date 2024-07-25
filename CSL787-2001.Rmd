@@ -2,8 +2,11 @@
 title: "CSL 787-2001 Design"
 author: "Huanyu Chen"
 date: "`r Sys.Date()`"
-output: github_document
+output:
+  html_document:
+    number_sections: true
 ---
+
 
 ```{r}
 library(ggplot2)
@@ -268,3 +271,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 
 summary(simulationResults)
 ```
+```{r}
+
+```
+
