@@ -1,0 +1,270 @@
+---
+title: "CSL 787-2001 Design"
+author: "Huanyu Chen"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+```{r}
+library(ggplot2)
+library(rpact)
+```
+
+# Design
+
+## Code and Output
+
+```{r}
+design <- getDesignGroupSequential(kMax = 2, typeOfDesign = "noEarlyEfficacy",
+                                   alpha = 0.1, typeBetaSpending = "bsOF")
+summary(design)
+```
+
+## Results and Interpretation
+
+`Futility probabilities under H1` = `Cumulative beta spent` = 0.0699
+
+# HR = 0.6
+
+## Introduction
+
+My goal in this section will focus on two things:
+
+1.  Defining a fixed power and calculating the sample size.
+
+2.  Calculating power based on a fixed sample size.
+
+We can further find in this section that the sample size corresponds to the power, i.e., the sample size calculated after the power is determined in the first step can get the same power in the second step.
+
+## Sample Size
+
+### Code and Output
+
+```{r}
+summary(getSampleSizeSurvival(design, lambda2 = 1.2, hazardRatio = 0.6,
+                              allocationRatioPlanned = 2, accrualTime = c(0, 1.83),
+                              followUpTime = 0.5))
+```
+
+### Results and Interpretation
+
+`Number of subjects` = 97.7 in the first stage and 124.6 in the second stage.
+
+## Power
+
+### Assumptions and Code Explanations
+
+`directionUpper = FALSE` indicates that the incidence of treatment arm is lower than placebo.
+
+`typeOfComputation = "Schoenfeld"` shows that it is based on the proportional hazards model and provides log-rank tests to compare the survival curves.
+
+`kappa = 1` stands for the exponential survival distribution.
+
+`maxNumberOfEvents` uses the data 83.1 calculated in the previous sample size section.
+
+`accrualIntensity` is calculated as: max Number Of Subjects / accrual time. In this example, I am using the data calculated in the previous sample size section, which is 124.6/1.83 = 68.09.
+
+Both codes will give exactly the same result. The only difference in the code is `accrualIntensity = 68.09` and `maxNumberOfSubjects = 124.6`, but as we said, they mean the same thing and can be converted to each other.
+
+### Code and Output
+
+```{r, eval=FALSE}
+summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
+                         directionUpper = FALSE, lambda2 = 1.2, hazardRatio = 0.6,
+                         maxNumberOfSubjects = 124.6, maxNumberOfEvents = 83.1,
+                         allocationRatioPlanned = 2, accrualTime = c(0, 1.83), kappa = 1))
+```
+
+```{r}
+summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
+                         directionUpper = FALSE, lambda2 = 1.2, hazardRatio = 0.6,
+                         maxNumberOfEvents = 83.1, allocationRatioPlanned = 2,
+                         accrualTime = c(0, 1.83), accrualIntensity = 68.09, kappa = 1))
+```
+
+### Results and Interpretation
+
+`Exit probability for futility (under H0)` = 0.5304 and `Exit probability for futility (under H1)` = 0.0700.
+
+## Conclusion
+
+In this section, our results successfully conclude that sample size corresponds to power.
+
+Specifically, 
+
+`Number of subjects` = 124.6 and `Cumulative number of events` =	83.1
+
+corresponds to
+
+`Exit probability for futility (under H0)` = 0.5304 and `Exit probability for futility (under H1)` = 0.0700.
+
+## Next Step:
+
+I am now trying to generalize the case of HR = 0.6 to different HRs.
+
+The ideas are still broken down into two parts:
+
+1. given the power (derived from alpha/beta), we can get different sample sizes for different HRs.
+
+2. given the sample size (which I based on the HR = 0.6 case while referring to Gaya's calculations in EAST, but this is open to discussion), calculate power for the case of different HRs.
+
+Only the HRs in the code are changed.
+
+# Combine Different HRs
+
+## Sample Size
+
+### Code and Output
+
+```{r}
+summary(getSampleSizeSurvival(design, lambda2 = 1.2, hazardRatio = c(0.6, 0.7, 0.8, 0.9),
+                              allocationRatioPlanned = 2, accrualTime = c(0, 1.83),
+                              followUpTime = 0.5))
+```
+
+### Results and Interpretation
+
+Can focus on: `Number of subjects` and `Cumulative number of events`.
+
+## Power
+
+### Code and Output
+
+```{r, eval=FALSE}
+summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
+                         directionUpper = FALSE, lambda2 = 1.2,
+                         hazardRatio = c(0.6, 0.7, 0.8, 0.9),
+                         maxNumberOfSubjects = 124.6, maxNumberOfEvents = 83.1,
+                         allocationRatioPlanned = 2, accrualTime = c(0, 1.83), kappa = 1))
+```
+
+```{r}
+summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
+                         directionUpper = FALSE, lambda2 = 1.2,
+                         hazardRatio = c(0.6, 0.7, 0.8, 0.9),
+                         maxNumberOfEvents = 83.1, allocationRatioPlanned = 2,
+                         accrualTime = c(0, 1.83), accrualIntensity = 68.09, kappa = 1))
+```
+
+### Results and Interpretation
+
+Can focus on: `Exit probability for futility (under H1)`.
+
+Below is a sample output table that summarizes some of the important information:
+
+| HR   | Exit Probability for Efficacy Stage 1 | Exit Probability for Futility Stage 1 | Number of Subjects Stage 1 | Number of Subjects Stage 2 | Expected Number of Subjects |
+|------|--------------------------------------|---------------------------------------|----------------------------|----------------------------|-----------------------------|
+| 0.6  | 0                                    | 0.0700                                | 97.7                       | 124.6                      | 122.7                       |
+| 0.7  | 0                                    | 0.1568                                | 93.9                       | 124.6                      | 119.8                       |
+| 0.8  | 0                                    | 0.2737                                | 90.8                       | 124.6                      | 115.3                       |
+| 0.9  | 0                                    | 0.4037                                | 88.1                       | 124.6                      | 109.9                       |
+
+Comments: Depending on the exit probabilities for futility, we may end early and therefore expect a lower number of subjects than in the previous setup.
+
+---
+No revisions yet, will do so tonight.
+
+# Multi-Arm GSD (ALL)
+
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsOF"
+)
+
+hazardRatios <- c(0.6, 0.7)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(35, 70)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined", # effect matrix
+  intersectionTest = "Hierarchical",
+  directionUpper = FALSE,
+  typeOfSelection = "all",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 2,
+  minNumberOfEventsPerStage = c(NA_real_, 30),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 1000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
+
+# Multi-Arm GSD (BEST Case 1)
+
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsOF"
+)
+
+hazardRatios <- c(0.6, 0.7)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(35, 70)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined", # effect matrix
+  intersectionTest = "Hierarchical",
+  directionUpper = FALSE,
+  typeOfSelection = "best",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 2,
+  minNumberOfEventsPerStage = c(NA_real_, 30),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 1000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
+
+# Multi-Arm GSD (BEST Case 2)
+
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsOF"
+)
+
+hazardRatios <- c(0.6, 0.7)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(350, 700)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined", # effect matrix
+  intersectionTest = "Hierarchical",
+  directionUpper = FALSE,
+  typeOfSelection = "best",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 2,
+  minNumberOfEventsPerStage = c(NA_real_, 300),
+  maxNumberOfEventsPerStage = c(NA_real_, 600),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 1000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
