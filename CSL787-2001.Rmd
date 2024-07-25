@@ -20,7 +20,7 @@ In this clinical trial design, we assume an 80% power ($\beta$) and a one-sided 
 
 2.  Replicate the power based on a fixed sample size derived in step 1 to check the accuracy of the calculation.
 
-3.  Generalize the results to different hazard ratios (HRs) of 0.6, 0.7, 0.8, and 0.9.
+3.  Generalize the results to different hazard ratios of 0.6, 0.7, 0.8, and 0.9.
 
     1.  Given an 80% power ($\beta$) and a one-sided significance level ($\alpha$) of 0.1, calculate the sample size needed to achieve this goal for different hazard ratios.
 
@@ -157,6 +157,17 @@ summary(getSampleSizeSurvival(design, lambda2 = 1.2, hazardRatio = c(0.6, 0.7, 0
 
 Can focus on: `Number of subjects` and `Cumulative number of events`.
 
+The sample size and number of events required for the trial increase significantly as the HR approaches 1. This is because detecting smaller differences between groups requires a larger sample size and more events to achieve the desired statistical power (80%). For instance, to detect an HR of 0.6, only 124.6 subjects and 83.1 events are needed. However, for an HR of 0.9, the trial would require 2583.0 subjects and 1954.4 events. This reflects the increased difficulty in detecting smaller differences and the need for more data to draw reliable conclusions.
+
+Below is a sample output table that summarizes the important output:
+
+| Hazard Ratio (HR) | Number of Subjects (Stage 1) | Number of Subjects (Stage 2) | Cumulative Number of Events (Stage 1) | Cumulative Number of Events (Stage 2) |
+|-------------------|------------------------------|------------------------------|---------------------------------------|---------------------------------------|
+| 0.6               | 97.7                         | 124.6                        | 41.6                                  | 83.1                                  |
+| 0.7               | 188.9                        | 242.8                        | 85.3                                  | 170.5                                 |
+| 0.8               | 459.3                        | 595.5                        | 217.9                                 | 435.7                                 |
+| 0.9               | 1975.2                       | 2583.0                       | 977.2                                 | 1954.4                                |
+
 ## Power
 
 ### Code and Output
@@ -179,25 +190,23 @@ summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
 
 ### Results and Interpretation
 
--   **Key Results:**
+-   **Exit probability for futility (under H1) given the overall sample size = 124.6:**
 
-    -   **Exit probability for futility (under H1) given the overall sample size = 124.6:**
+    -   HR = 0.6: 7.00% probability of stopping early for futility (under H1).
 
-        -   HR = 0.6: 7.00% probability of stopping early for futility (under H1).
+    -   HR = 0.7: 15.68% probability of stopping early for futility (under H1).
 
-        -   HR = 0.7: 15.68% probability of stopping early for futility (under H1).
+    -   HR = 0.8: 27.37% probability of stopping early for futility (under H1).
 
-        -   HR = 0.8: 27.37% probability of stopping early for futility (under H1).
+    -   HR = 0.9: 40.37% probability of stopping early for futility (under H1).
 
-        -   HR = 0.9: 40.37% probability of stopping early for futility (under H1).
+-   **Expected number of subjects under H1:**
 
-    -   **Expected number of subjects under H1:**
+    -   Expected number of subjects under H1 decreases from 122.7 (HR = 0.6) to 109.9 (HR = 0.9).
 
-        -   Expected number of subjects under H1 decreases from 122.7 (HR = 0.6) to 109.9 (HR = 0.9).
+    -   The expected number of subjects decreases with increasing HR values, indicating a higher likelihood of early stopping as the treatment effect diminishes.
 
-        -   The expected number of subjects decreases with increasing HR values, indicating a higher likelihood of early stopping as the treatment effect diminishes.
-
-Below is a sample output table that summarizes some of the important information:
+Below is a sample output table that summarizes the important output:
 
 | HR  | Exit Probability for Efficacy Stage 1 | Exit Probability for Futility Stage 1 | Number of Subjects Stage 1 | Number of Subjects Stage 2 | Expected Number of Subjects |
 |------------|------------|------------|------------|------------|------------|
