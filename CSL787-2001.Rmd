@@ -26,7 +26,7 @@ In this clinical trial design, we assume an 80% power ($\beta$) and a one-sided 
 
     2.  Calculate the power based on the sample size for HR = 0.6 to check how different hazard ratios influence the probability.
 
-------------------------------------------------------------------------
+
 
 # Compare rpact results with EAST results
 
@@ -56,7 +56,7 @@ summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2, hazardRa
 
 The results are the same. This gives us confidence to move forward with rpact. I used the Beta Spending O'Brien & Fleming function (bsOF) for later analysis in rpact because it is the internal function, but I am open to other methods based on needs.
 
-------------------------------------------------------------------------
+
 
 # Design
 
@@ -74,7 +74,7 @@ summary(design)
 
 This design includes an O'Brien & Fleming beta spending approach, where the probability of stopping for futility is controlled and accumulates across stages.
 
-------------------------------------------------------------------------
+
 
 # HR = 0.6
 
@@ -169,7 +169,7 @@ The ideas are still broken down into two parts:
 
 Only the HRs in the code are changed.
 
-------------------------------------------------------------------------
+
 
 # Combine Different HRs
 
@@ -246,7 +246,7 @@ Below is a sample output table that summarizes the important output:
 | 0.9 | 0                                     | 0.4037                                | 88.1                       | 124.6                      | 109.9                       |
 
 
-------------------------------------------------------------------------
+
 
 # Multi-Arm GSD (all)
 
