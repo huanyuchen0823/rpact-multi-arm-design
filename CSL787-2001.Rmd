@@ -28,6 +28,36 @@ In this clinical trial design, we assume an 80% power ($\beta$) and a one-sided 
 
 ------------------------------------------------------------------------
 
+# Compare rpact results with EAST results
+
+## EAST results
+
+The table below shows the EAST results from Gaya. This is a fixed sample design with 48 subjects per arm and a total of 78 events. The allocation rate is 2:1 and other assumptions remain the same.
+
+![](./EAST.png)
+
+## rpact results
+
+What I did for replicating the results:
+
+1.  Since rpact did not have an output function for the rho parameter, I defined the beta spending at the interim analysis manually at the first step.
+2.  Then I returned the results for the exit probability for futility at the interim analysis and compared with the highlighted values in the table. We can find that we will get the same values.
+
+```{r}
+design <- getDesignGroupSequential(kMax = 2, typeOfDesign = "noEarlyEfficacy",
+                                   alpha = 0.1, typeBetaSpending = "bsUser",
+                                   userBetaSpending = c(0.035, 0.2))
+summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2, hazardRatio = 0.6,
+                         maxNumberOfEvents = 80, allocationRatioPlanned = 2,
+                         accrualTime = c(0, 1.83), accrualIntensity = 79))
+```
+
+## Conclusion
+
+The results are the same. This gives us confidence to move forward with rpact. I used the Beta Spending O'Brien & Fleming function (bsOF) for later analysis in rpact because it is the internal function, but I am open to other methods based on needs.
+
+------------------------------------------------------------------------
+
 # Design
 
 ## Code and Output
@@ -162,7 +192,7 @@ The sample size and number of events required for the trial increase significant
 Below is a sample output table that summarizes the important output:
 
 | Hazard Ratio (HR) | Number of Subjects (Stage 1) | Number of Subjects (Stage 2) | Cumulative Number of Events (Stage 1) | Cumulative Number of Events (Stage 2) |
-|-------------------|------------------------------|------------------------------|---------------------------------------|---------------------------------------|
+|---------------|---------------|---------------|---------------|---------------|
 | 0.6               | 97.7                         | 124.6                        | 41.6                                  | 83.1                                  |
 | 0.7               | 188.9                        | 242.8                        | 85.3                                  | 170.5                                 |
 | 0.8               | 459.3                        | 595.5                        | 217.9                                 | 435.7                                 |
@@ -215,9 +245,10 @@ Below is a sample output table that summarizes the important output:
 | 0.8 | 0                                     | 0.2737                                | 90.8                       | 124.6                      | 115.3                       |
 | 0.9 | 0                                     | 0.4037                                | 88.1                       | 124.6                      | 109.9                       |
 
+
 ------------------------------------------------------------------------
 
-# Multi-Arm GSD (ALL)
+# Multi-Arm GSD (all)
 
 ```{r}
 design <- getDesignInverseNormal(
@@ -252,7 +283,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
-# Multi-Arm GSD (BEST Case 1)
+# Multi-Arm GSD (best: Case 1)
 
 ```{r}
 design <- getDesignInverseNormal(
@@ -287,7 +318,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
-# Multi-Arm GSD (BEST Case 2)
+# Multi-Arm GSD (best: Case 2)
 
 ```{r}
 design <- getDesignInverseNormal(
