@@ -68,6 +68,17 @@ summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2,
                          accrualTime = c(0, 1.83), accrualIntensity = 81.4))
 ```
 
+```{r}
+# rho = 2
+design <- getDesignGroupSequential(kMax = 2, typeOfDesign = "noEarlyEfficacy",
+                                   alpha = 0.1, typeBetaSpending = "bsUser",
+                                   userBetaSpending = c(0.05, 0.2))
+
+summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2,
+                         hazardRatio = 0.6,
+                         maxNumberOfEvents = 81, allocationRatioPlanned = 2,
+                         accrualTime = c(0, 1.83), accrualIntensity = 81.4))
+```
 
 ```{r}
 # rho = 2.5
