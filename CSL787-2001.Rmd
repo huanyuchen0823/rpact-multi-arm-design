@@ -39,7 +39,6 @@ summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2,
                          hazardRatio = 0.6,
                          maxNumberOfEvents = 88, allocationRatioPlanned = 2,
                          accrualTime = c(0, 1.83), accrualIntensity = 87.9
-                         # accrualIntensity = 78.7 if sample size = 144
                          )
         )
 ```
@@ -365,10 +364,9 @@ design <- getDesignInverseNormal(
   alpha = 0.1,
   beta = 0.2,
   typeOfDesign = "noEarlyEfficacy",
-  # typeBetaSpending = "bsUser",
-  # userBetaSpending = c(0.070, 0.198) # rho = 1.07
-  typeBetaSpending = "bsOF"
-)
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
 
 hazardRatios <- c(0.6, 0.7)
 plannedEvents <- c(45, 90)
@@ -425,8 +423,9 @@ design <- getDesignInverseNormal(
   alpha = 0.1,
   beta = 0.2,
   typeOfDesign = "noEarlyEfficacy",
-  typeBetaSpending = "bsOF"
-)
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
 
 hazardRatios <- c(0.6, 0.7)
 effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
@@ -463,7 +462,7 @@ summary(simulationResults)
 
 -   The conditional power achieved in the second phase was 80.32%, which is close to the target value of 80%.
 
-# Question 1:
+# Question:
 
 -   If we chose `intersectionTest = "Dunnett"`, we can get following results:
     -   Rejected arms per stage
@@ -508,10 +507,3 @@ simulationResults <- getSimulationMultiArmSurvival(
 
 summary(simulationResults)
 ```
-
-# Question 2:
-
-What beta spending function will we use in the multiarm design?
-
-1.  O'Brien & Fleming
-2.  Rho family: which rho will we take?
