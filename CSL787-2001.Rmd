@@ -14,8 +14,6 @@ library(rpact)
 
 In this clinical trial design, we assume an 80% power ($\beta = 0.2$) and a one-sided significance level ($\alpha$) of 0.1. Subjects will be followed for a maximum of 1 year, with the last subject being followed for 0.5 years. The accrual time is 1.83 years, and the study duration is 2.33 years. The hazard rate ($\lambda$) for the placebo group is assumed to be 1.2 per year. The hazard ratios are set at 0.6, 0.7, 0.8, and 0.9, assuming an exponential distribution of events. The trial uses a 2:1 allocation ratio, meaning two subjects in the treatment group for every one subject in the placebo group. This trial does not allow for early stopping due to efficacy, ensuring that the study reaches its planned conclusion unless futility is determined.
 
-
-
 # Compare rpact results with EAST results
 
 ## EAST results
@@ -91,7 +89,6 @@ summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2,
                          maxNumberOfEvents = 80, allocationRatioPlanned = 2,
                          accrualTime = c(0, 1.83), accrualIntensity = 80.3))
 ```
-
 
 ```{r}
 # rho = 1.5
@@ -187,8 +184,6 @@ summary(design)
 
 This design includes an O'Brien & Fleming beta spending approach, where the probability of stopping for futility is controlled and accumulates across stages.
 
-
-
 # HR = 0.6
 
 ## Introduction
@@ -282,8 +277,6 @@ The ideas are still broken down into two parts:
 
 Only the HRs in the code are changed.
 
-
-
 # Combine Different HRs
 
 ## Sample Size
@@ -358,13 +351,11 @@ Below is a sample output table that summarizes the important output:
 | 0.8 | 0                                     | 0.2737                                | 90.8                       | 124.6                      | 115.3                       |
 | 0.9 | 0                                     | 0.4037                                | 88.1                       | 124.6                      | 109.9                       |
 
+# Multi-Arm GSD (both arms)
 
-
-
-# Multi-Arm GSD (all)
 ## Assumption
-a fixed sample size design 
 
+In this fixed sample size design, we ensure an overall one-sided significance level of 0.1 (alpha = 0.1) and a power of 80% (beta = 0.2). This design was configured to avoid early efficacy stopping and utilized **O'Brien & Fleming beta spending function** approach. We assumed hazard ratios of 0.6 and 0.7 for the high dose and low dose treatment arms. The study planned for 45 events in the first stage and 90 cumulative events by the second stage, with an allocation ratio of 1:1 for two arms.
 
 ## Code and Output
 
@@ -374,6 +365,8 @@ design <- getDesignInverseNormal(
   alpha = 0.1,
   beta = 0.2,
   typeOfDesign = "noEarlyEfficacy",
+  # typeBetaSpending = "bsUser",
+  # userBetaSpending = c(0.070, 0.198) # rho = 1.07
   typeBetaSpending = "bsOF"
 )
 
@@ -393,14 +386,38 @@ simulationResults <- getSimulationMultiArmSurvival(
   minNumberOfEventsPerStage = c(NA_real_, 40),
   maxNumberOfEventsPerStage = c(NA_real_, 60),
   conditionalPower = 0.8,
-  maxNumberOfIterations = 1000,
+  maxNumberOfIterations = 5000,
   seed = 12345
 )
 
 summary(simulationResults)
 ```
 
-# Multi-Arm GSD (best: Case 1)
+## Results and Interpretation
+
+-   Probability of rejecting each treatment group in stage 2:
+
+    -   High dose vs. control: 76.84%
+
+    -   Low dose vs. control: 49.30%
+
+-   Exit probability for futility: 9.4%
+
+-   Conditional power: 80.49%
+
+We can find that the probability of rejecting at least one hypothesis in the second stage is 76.84%. Moreover, overall exit probability is 9.40%.
+
+# Multi-Arm GSD (best arm)
+
+## Introduction
+
+In this section, we wish to select the best arm for the second stage of the analysis. This means that we will drop an arm in the interim analysis. We can do this by defining `typeOfSelection = "best"` in the function `getSimulationMultiArmSurvival`.
+
+## Assumption
+
+As mentioned in the previous section, this fixed sample size design can ensure an overall one-sided significance level of 0.1 (alpha = 0.1) and a power of 80% (beta = 0.2). Additionally, this design was configured to avoid early efficacy stopping and utilized **O'Brien & Fleming beta spending function** approach. We assumed hazard ratios of 0.6 and 0.7 for the high dose and low dose treatment arms. The study planned for 45 events in the first stage and 90 cumulative events by the second stage, with an allocation ratio of 1:1 for two arms.
+
+## Code and Output
 
 ```{r}
 design <- getDesignInverseNormal(
@@ -421,23 +438,45 @@ simulationResults <- getSimulationMultiArmSurvival(
   effectMatrix = effectMatrix,
   typeOfShape = "userDefined", # effect matrix
   intersectionTest = "Hierarchical",
+  # intersectionTest = "Dunnett",
   directionUpper = FALSE,
   typeOfSelection = "best",
   plannedEvents = plannedEvents,
-  allocationRatioPlanned = 2,
-  minNumberOfEventsPerStage = c(NA_real_, 30),
+  allocationRatioPlanned = 1,
+  minNumberOfEventsPerStage = c(NA_real_, 40),
   maxNumberOfEventsPerStage = c(NA_real_, 60),
   conditionalPower = 0.8,
-  maxNumberOfIterations = 1000,
+  maxNumberOfIterations = 5000,
   seed = 12345
 )
 
 summary(simulationResults)
 ```
 
-# Multi-Arm GSD (best: Case 2)
+## Results and Interpretation
 
-```{r}
+-   In stage 1, no efficacy boundaries were used, which is consistent with our hypothesis. In stage 2, the probability of the trial rejecting at least one hypothesis was 58.72%, as was the success rate.
+
+-   The exit probability for futility at interim analysis was 8.74%.
+
+-   Higher doses are more likely to be selected (with a probability of 63.5%) compared to lower doses (with a probability of 63.5%), so higher doses will be preferred in stage 2 as the "best" dose.
+
+-   The conditional power achieved in the second phase was 80.32%, which is close to the target value of 80%.
+
+# Question 1:
+
+-   If we chose `intersectionTest = "Dunnett"`, we can get following results:
+    -   Rejected arms per stage
+    -   Treatment arm vs. control 0 0.5418
+    -   Treatment arm vs. control 0 0.2412
+-   However, if we chose `intersectionTest = "Hierarchical"`, we can get following results:
+    -   Rejected arms per stage
+    -   Treatment arm vs. control 0 0.5872
+    -   Treatment arm vs. control 0 0
+-   The second treatment arm in hierarchical testing will get zero at the second stage no matter the value of parameters. I am not very sure why it happened? How to understand it and interpret the results? Is my current understanding correct:
+    -   If the first treatment arm rejects null, we stop and conclude that at least one treatment arm is valid. If the first treatment group fails to reject null, then the second treatment group cannot reject null either. In this way, the final result will be 0.
+
+```{r, eval=FALSE}
 design <- getDesignInverseNormal(
   kMax = 2, 
   alpha = 0.1,
@@ -448,24 +487,31 @@ design <- getDesignInverseNormal(
 
 hazardRatios <- c(0.6, 0.7)
 effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
-plannedEvents <- c(350, 700)
+plannedEvents <- c(45, 90)
 
 simulationResults <- getSimulationMultiArmSurvival(
   design = design,
   activeArms = 2,
   effectMatrix = effectMatrix,
-  typeOfShape = "userDefined", # effect matrix
-  intersectionTest = "Hierarchical",
+  typeOfShape = "userDefined",
+  intersectionTest = "Dunnett",
   directionUpper = FALSE,
   typeOfSelection = "best",
   plannedEvents = plannedEvents,
-  allocationRatioPlanned = 2,
-  minNumberOfEventsPerStage = c(NA_real_, 300),
-  maxNumberOfEventsPerStage = c(NA_real_, 600),
+  allocationRatioPlanned = 1,
+  minNumberOfEventsPerStage = c(NA_real_, 40),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
   conditionalPower = 0.8,
-  maxNumberOfIterations = 1000,
+  maxNumberOfIterations = 5000,
   seed = 12345
 )
 
 summary(simulationResults)
 ```
+
+# Question 2:
+
+What beta spending function will we use in the multiarm design?
+
+1.  O'Brien & Fleming
+2.  Rho family: which rho will we take?
