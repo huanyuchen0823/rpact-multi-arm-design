@@ -475,7 +475,8 @@ summary(simulationResults)
 -   The second treatment arm in hierarchical testing will get zero at the second stage no matter the value of parameters. I am not very sure why it happened? How to understand it and interpret the results? Is my current understanding correct:
     -   If the first treatment arm rejects null, we stop and conclude that at least one treatment arm is valid. If the first treatment group fails to reject null, then the second treatment group cannot reject null either. In this way, the final result will be 0.
 
-```{r, eval=FALSE}
+## intersectionTest = "Dunnett" & hazardRatios <- c(0.6, 0.7)
+```{r}
 design <- getDesignInverseNormal(
   kMax = 2, 
   alpha = 0.1,
@@ -494,6 +495,78 @@ simulationResults <- getSimulationMultiArmSurvival(
   effectMatrix = effectMatrix,
   typeOfShape = "userDefined",
   intersectionTest = "Dunnett",
+  directionUpper = FALSE,
+  typeOfSelection = "best",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 1,
+  minNumberOfEventsPerStage = c(NA_real_, 40),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 5000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
+
+## intersectionTest = "Hierarchical" & hazardRatios <- c(0.6, 0.7)
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
+
+hazardRatios <- c(0.6, 0.7)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(45, 90)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined", # effect matrix
+  intersectionTest = "Hierarchical",
+  # intersectionTest = "Dunnett",
+  directionUpper = FALSE,
+  typeOfSelection = "best",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 1,
+  minNumberOfEventsPerStage = c(NA_real_, 40),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 5000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
+
+## intersectionTest = "Hierarchical" & hazardRatios <- c(0.7, 0.6)
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
+
+hazardRatios <- c(0.7, 0.6)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(45, 90)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined", # effect matrix
+  intersectionTest = "Hierarchical",
+  # intersectionTest = "Dunnett",
   directionUpper = FALSE,
   typeOfSelection = "best",
   plannedEvents = plannedEvents,
