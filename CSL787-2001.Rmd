@@ -173,7 +173,8 @@ summary(getPowerSurvival(design, directionUpper = FALSE, lambda2 = 1.2,
 
 ```{r}
 design <- getDesignGroupSequential(kMax = 2, typeOfDesign = "noEarlyEfficacy",
-                                   alpha = 0.1, typeBetaSpending = "bsOF")
+                                   alpha = 0.1, typeBetaSpending = "bsUser",
+                                   userBetaSpending = c(0.059, 0.198))
 summary(design)
 ```
 
@@ -475,7 +476,7 @@ summary(simulationResults)
 -   The second treatment arm in hierarchical testing will get zero at the second stage no matter the value of parameters. I am not very sure why it happened? How to understand it and interpret the results? Is my current understanding correct:
     -   If the first treatment arm rejects null, we stop and conclude that at least one treatment arm is valid. If the first treatment group fails to reject null, then the second treatment group cannot reject null either. In this way, the final result will be 0.
 
-## intersectionTest = "Dunnett" & hazardRatios <- c(0.6, 0.7)
+## "Dunnett" & HR <- c(0.6, 0.7)
 ```{r}
 design <- getDesignInverseNormal(
   kMax = 2, 
@@ -509,7 +510,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
-## intersectionTest = "Dunnett" & hazardRatios <- c(0.7, 0.6)
+## "Dunnett" & HR <- c(0.7, 0.6)
 ```{r}
 design <- getDesignInverseNormal(
   kMax = 2, 
@@ -543,7 +544,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
-## intersectionTest = "Hierarchical" & hazardRatios <- c(0.6, 0.7)
+## "Hierarchical" & HR <- c(0.6, 0.7)
 ```{r}
 design <- getDesignInverseNormal(
   kMax = 2, 
@@ -579,7 +580,7 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
-## intersectionTest = "Hierarchical" & hazardRatios <- c(0.7, 0.6)
+## "Hierarchical" & HR <- c(0.7, 0.6)
 ```{r}
 design <- getDesignInverseNormal(
   kMax = 2, 
