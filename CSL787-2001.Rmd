@@ -485,8 +485,9 @@ design <- getDesignInverseNormal(
   alpha = 0.1,
   beta = 0.2,
   typeOfDesign = "noEarlyEfficacy",
-  typeBetaSpending = "bsOF"
-)
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
 
 hazardRatios <- c(0.6, 0.7)
 effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
@@ -519,8 +520,9 @@ design <- getDesignInverseNormal(
   alpha = 0.1,
   beta = 0.2,
   typeOfDesign = "noEarlyEfficacy",
-  typeBetaSpending = "bsOF"
-)
+  typeBetaSpending = "bsUser",
+  userBetaSpending = c(0.059, 0.198) # rho = 1.75
+  )
 
 hazardRatios <- c(0.7, 0.6)
 effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
