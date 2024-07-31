@@ -312,7 +312,7 @@ Below is a sample output table that summarizes the important output:
 summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
                          directionUpper = FALSE, lambda2 = 1.2,
                          hazardRatio = c(0.6, 0.7, 0.8, 0.9),
-                         maxNumberOfSubjects = 124.6, maxNumberOfEvents = 83.1,
+                         maxNumberOfSubjects = 126, maxNumberOfEvents = 84,
                          allocationRatioPlanned = 2, accrualTime = c(0, 1.83), kappa = 1))
 ```
 
@@ -320,8 +320,8 @@ summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
 summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
                          directionUpper = FALSE, lambda2 = 1.2,
                          hazardRatio = c(0.6, 0.7, 0.8, 0.9),
-                         maxNumberOfEvents = 83.1, allocationRatioPlanned = 2,
-                         accrualTime = c(0, 1.83), accrualIntensity = 68.09, kappa = 1))
+                         maxNumberOfEvents = 84, allocationRatioPlanned = 2,
+                         accrualTime = c(0, 1.83), accrualIntensity = 68.9, kappa = 1))
 ```
 
 ### Results and Interpretation
@@ -344,12 +344,14 @@ summary(getPowerSurvival(design, thetaH0 = 1, typeOfComputation = "Schoenfeld",
 
 Below is a sample output table that summarizes the important output:
 
-| HR  | Exit Probability for Efficacy Stage 1 | Exit Probability for Futility Stage 1 | Number of Subjects Stage 1 | Number of Subjects Stage 2 | Expected Number of Subjects |
-|------------|------------|------------|------------|------------|------------|
-| 0.6 | 0                                     | 0.0700                                | 97.7                       | 124.6                      | 122.7                       |
-| 0.7 | 0                                     | 0.1568                                | 93.9                       | 124.6                      | 119.8                       |
-| 0.8 | 0                                     | 0.2737                                | 90.8                       | 124.6                      | 115.3                       |
-| 0.9 | 0                                     | 0.4037                                | 88.1                       | 124.6                      | 109.9                       |
+Here is the table with the requested format:
+
+| HR   | Exit Probability for Efficacy Stage 1 | Exit Probability for Futility Stage 1 | Number of Subjects Stage 1 | Number of Subjects Stage 2 | Expected Number of Subjects |
+|------|---------------------------------------|---------------------------------------|-----------------------------|-----------------------------|-----------------------------|
+| 0.6  | 0                                     | 0.0689                                | 98.8                        | 126.1                       | 124.2                       |
+| 0.7  | 0                                     | 0.1554                                | 95.0                        | 126.1                       | 121.3                       |
+| 0.8  | 0                                     | 0.2724                                | 91.8                        | 126.1                       | 116.7                       |
+| 0.9  | 0                                     | 0.4030                                | 89.1                        | 126.1                       | 111.2                       |
 
 # Multi-Arm GSD (both arms)
 
