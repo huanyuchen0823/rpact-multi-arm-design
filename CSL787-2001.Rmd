@@ -509,6 +509,40 @@ simulationResults <- getSimulationMultiArmSurvival(
 summary(simulationResults)
 ```
 
+## intersectionTest = "Dunnett" & hazardRatios <- c(0.7, 0.6)
+```{r}
+design <- getDesignInverseNormal(
+  kMax = 2, 
+  alpha = 0.1,
+  beta = 0.2,
+  typeOfDesign = "noEarlyEfficacy",
+  typeBetaSpending = "bsOF"
+)
+
+hazardRatios <- c(0.7, 0.6)
+effectMatrix <- matrix(hazardRatios, ncol = 2, byrow = TRUE)
+plannedEvents <- c(45, 90)
+
+simulationResults <- getSimulationMultiArmSurvival(
+  design = design,
+  activeArms = 2,
+  effectMatrix = effectMatrix,
+  typeOfShape = "userDefined",
+  intersectionTest = "Dunnett",
+  directionUpper = FALSE,
+  typeOfSelection = "best",
+  plannedEvents = plannedEvents,
+  allocationRatioPlanned = 1,
+  minNumberOfEventsPerStage = c(NA_real_, 40),
+  maxNumberOfEventsPerStage = c(NA_real_, 60),
+  conditionalPower = 0.8,
+  maxNumberOfIterations = 5000,
+  seed = 12345
+)
+
+summary(simulationResults)
+```
+
 ## intersectionTest = "Hierarchical" & hazardRatios <- c(0.6, 0.7)
 ```{r}
 design <- getDesignInverseNormal(
