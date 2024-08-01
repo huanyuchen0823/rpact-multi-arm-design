@@ -379,7 +379,7 @@ simulationResults <- getSimulationMultiArmSurvival(
   activeArms = 2,
   effectMatrix = matrix(hazardRatios, ncol = 2, byrow = TRUE),
   typeOfShape = "userDefined", # effect matrix
-  intersectionTest = "Hierarchical",
+  intersectionTest = "Dunnett",
   directionUpper = FALSE,
   typeOfSelection = "all",
   plannedEvents = plannedEvents,
@@ -395,18 +395,15 @@ summary(simulationResults)
 ```
 
 ## Results and Interpretation
+-   Reject at least one: 77.3%
 
 -   Probability of rejecting each treatment group in stage 2:
 
-    -   High dose vs. control: 76.84%
+    -   High dose vs. control: 71.3%
 
-    -   Low dose vs. control: 49.30%
+    -   Low dose vs. control: 55%
 
--   Exit probability for futility: 9.4%
-
--   Conditional power: 80.49%
-
-We can find that the probability of rejecting at least one hypothesis in the second stage is 76.84%. Moreover, overall exit probability is 9.40%.
+-   Exit probability for futility: 7.1%
 
 # Multi-Arm GSD (best arm)
 
@@ -416,7 +413,7 @@ In this section, we wish to select the best arm for the second stage of the anal
 
 ## Assumption
 
-As mentioned in the previous section, this fixed sample size design can ensure an overall one-sided significance level of 0.1 (alpha = 0.1) and a power of 80% (beta = 0.2). Additionally, this design was configured to avoid early efficacy stopping and utilized **O'Brien & Fleming beta spending function** approach. We assumed hazard ratios of 0.6 and 0.7 for the high dose and low dose treatment arms. The study planned for 45 events in the first stage and 90 cumulative events by the second stage, with an allocation ratio of 1:1 for two arms.
+As mentioned in the previous section, this fixed sample size design can ensure an overall one-sided significance level of 0.1 (alpha = 0.1) and a power of 80% (beta = 0.2). Additionally, this design was configured to avoid early efficacy stopping and utilized **rho spending function** approach. We assumed hazard ratios of 0.6 and 0.7 for the high dose and low dose treatment arms. The study planned for 45 events in the first stage and 90 cumulative events by the second stage, with an allocation ratio of 1:1 for two arms.
 
 ## Code and Output
 
@@ -439,8 +436,8 @@ simulationResults <- getSimulationMultiArmSurvival(
   activeArms = 2,
   effectMatrix = effectMatrix,
   typeOfShape = "userDefined", # effect matrix
-  intersectionTest = "Hierarchical",
-  # intersectionTest = "Dunnett",
+  # intersectionTest = "Hierarchical",
+  intersectionTest = "Dunnett",
   directionUpper = FALSE,
   typeOfSelection = "best",
   plannedEvents = plannedEvents,
@@ -457,13 +454,13 @@ summary(simulationResults)
 
 ## Results and Interpretation
 
--   In stage 1, no efficacy boundaries were used, which is consistent with our hypothesis. In stage 2, the probability of the trial rejecting at least one hypothesis was 58.72%, as was the success rate.
+-   In stage 1, no efficacy boundaries were used, which is consistent with our hypothesis. In stage 2, the probability of the trial rejecting at least one hypothesis was 78.9%, as was the success rate.
 
--   The exit probability for futility at interim analysis was 8.74%.
+-   The exit probability for futility at interim analysis was 6.8%.
 
--   Higher doses are more likely to be selected (with a probability of 63.5%) compared to lower doses (with a probability of 63.5%), so higher doses will be preferred in stage 2 as the "best" dose.
+-   Higher doses are more likely to be selected (with a probability of 61.4%) compared to lower doses (with a probability of 31.8%), so higher doses will be preferred in stage 2 as the "best" dose.
 
--   The conditional power achieved in the second phase was 80.32%, which is close to the target value of 80%.
+-   The conditional power achieved in the second phase was 81.1%, which is close to the target value of 80%.
 
 # Question:
 
